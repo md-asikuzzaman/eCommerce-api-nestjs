@@ -1,4 +1,6 @@
 import { Injectable } from '@nestjs/common';
+import { CreateCategoryDto } from './dto/create-category.dto';
+import { UpdateCategoryDto } from './dto/update-category.dto';
 
 @Injectable()
 export class CategoriesService {
@@ -10,12 +12,12 @@ export class CategoriesService {
     return { id };
   }
 
-  createCategory() {
-    return { id: 2, name: 'New Category' };
+  createCategory(dto: CreateCategoryDto) {
+    return { dto };
   }
 
-  updateCategory(id: string) {
-    return { id };
+  updateCategory(id: string, dto: UpdateCategoryDto) {
+    return { id, dto };
   }
 
   deleteCategory(id: string) {
