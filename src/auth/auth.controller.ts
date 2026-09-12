@@ -9,14 +9,13 @@ export class AuthController {
 
   @Post('register')
   register(@Body() dto: RegisterDto) {
-    // Implement your registration logic here
-    return { dto };
+    return this.authService.register(dto);
   }
 
+  // It's will handle by passport.js with diffrent way...
   @Post('login')
   login(@Body() dto: LoginDto) {
-    // Implement your login logic here
-    return { dto };
+    return this.authService.login(dto);
   }
 
   @Post('logout')
