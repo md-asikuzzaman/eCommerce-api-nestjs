@@ -11,7 +11,7 @@ datasource db {
   provider = "postgresql"
 }
 
-// define schema
+// Categories model
 model Categories {
   id          String   @id @default(uuid())
   name        String   @unique
@@ -29,6 +29,7 @@ model Categories {
   @@index([isActive])
 }
 
+// Products model
 model Products {
   id             String   @id @default(uuid())
   name           String
@@ -48,4 +49,22 @@ model Products {
 
   @@index([categoryId])
   @@index([isActive])
+}
+
+// Users model
+model Users {
+  id           String   @id @default(uuid())
+  name         String
+  email        String   @unique
+  passwordHash String
+  role         UserRole @default(USER)
+  isActive     Boolean  @default(true)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+enum UserRole {
+  USER
+  ADMIN
 }
