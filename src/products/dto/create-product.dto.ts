@@ -1,5 +1,6 @@
 import {
   IsBoolean,
+  IsInt,
   IsNumber,
   IsOptional,
   IsString,
@@ -21,7 +22,7 @@ export class CreateProductDto {
   @IsOptional()
   @IsString()
   @MaxLength(2000)
-  description!: string;
+  description?: string;
 
   @IsString()
   @MinLength(2)
@@ -35,13 +36,17 @@ export class CreateProductDto {
   @IsOptional()
   @IsNumber({ maxDecimalPlaces: 2 })
   @Min(0)
-  compareAtPrice!: number;
+  compareAtPrice?: number;
+
+  @IsInt()
+  @Min(0)
+  quantity!: number;
 
   @IsOptional()
   @IsBoolean()
-  isActive!: boolean;
+  isActive?: boolean;
 
   @IsOptional()
   @IsBoolean()
-  isFeatured!: boolean;
+  isFeatured?: boolean;
 }

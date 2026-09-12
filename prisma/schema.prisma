@@ -11,12 +11,41 @@ datasource db {
   provider = "postgresql"
 }
 
-
 // define schema
 model Categories {
-  id                   String  @id @default(cuid())
-  name                 String  @unique
-  description          String?
-  createdAt            DateTime @default(now())
-  updatedAt            DateTime @updatedAt
+  id          String   @id @default(uuid())
+  name        String   @unique
+  slug        String   @unique
+  description String?
+  parentId    String?
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // product relation
+  products Products[]
+
+  @@index([parentId])
+  @@index([isActive])
+}
+
+model Products {
+  id             String   @id @default(uuid())
+  name           String
+  slug           String   @unique
+  description    String?
+  price          Float
+  categoryId     String
+  sku            String   @unique
+  compareAtPrice Float?
+  quantity       Int      @default(0)
+  isFeatured     Boolean  @default(false)
+  isActive       Boolean  @default(true)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  category Categories @relation(fields: [categoryId], references: [id])
+
+  @@index([categoryId])
+  @@index([isActive])
 }
