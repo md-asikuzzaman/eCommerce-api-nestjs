@@ -7,21 +7,64 @@ import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { generateSlug } from 'src/common/utils/slug.util';
+import { Prisma } from '@prisma/client';
 
 @Injectable()
 export class ProductsService {
   constructor(private readonly prisma: PrismaService) {}
 
-  async getAllProducts(page: number, limit: number) {
+  async getAllProducts(
+    page: number,
+    limit: number,
+    categoryId?: string,
+    search?: string,
+    minPrice?: number,
+    maxPrice?: number,
+    sortBy?: 'price' | 'createdAt' | 'name',
+    order?: 'asc' | 'desc',
+  ) {
     const skip = (page - 1) * limit;
+
+    const where: Prisma.ProductsWhereInput = {
+      ...(categoryId && { categoryId }),
+
+      ...(search && {
+        name: {
+          contains: search,
+          mode: 'insensitive',
+        },
+      }),
+
+      ...((minPrice !== undefined || maxPrice !== undefined) && {
+        price: {
+          ...(minPrice !== undefined && {
+            gte: minPrice,
+          }),
+
+          ...(maxPrice !== undefined && {
+            lte: maxPrice,
+          }),
+        },
+      }),
+    };
 
     const [products, total] = await Promise.all([
       this.prisma.products.findMany({
+        where,
         skip,
         take: limit,
+        orderBy: sortBy
+          ? {
+              [sortBy]: order ?? 'asc',
+            }
+          : {
+              createdAt: 'desc',
+            },
       }),
 
-      this.prisma.products.count(),
+      this.prisma.products.count({
+        where,
+      }),
     ]);
 
     const totalPages = Math.ceil(total / limit);

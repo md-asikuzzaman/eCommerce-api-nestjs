@@ -13,7 +13,7 @@ import { Public } from 'src/auth/decorators/public.decorator';
 import { Roles } from 'src/auth/decorators/roles.decorator';
 import { Role } from 'src/auth/types/authenticated-user.type';
 import { Message } from 'src/common/decorators/message.decorator';
-import { PaginationDto } from 'src/common/dto/pagination.dto';
+import { GetProductsDto } from 'src/common/dto/get-products.dto';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { ProductsService } from './products.service';
@@ -25,8 +25,27 @@ export class ProductsController {
   @Public()
   @Message('Products fetched successfully')
   @Get()
-  getAllProducts(@Query() query: PaginationDto) {
-    return this.productsService.getAllProducts(query.page, query.limit);
+  getAllProducts(@Query() query: GetProductsDto) {
+    const {
+      page,
+      limit,
+      categoryId,
+      search,
+      minPrice,
+      maxPrice,
+      sortBy,
+      order,
+    } = query;
+    return this.productsService.getAllProducts(
+      page,
+      limit,
+      categoryId,
+      search,
+      minPrice,
+      maxPrice,
+      sortBy,
+      order,
+    );
   }
 
   @Public()
