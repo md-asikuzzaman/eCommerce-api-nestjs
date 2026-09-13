@@ -12,9 +12,21 @@ import { generateSlug } from 'src/common/utils/slug.util';
 export class ProductsService {
   constructor(private readonly prisma: PrismaService) {}
 
-  async getAllProducts() {
-    const products = await this.prisma.products.findMany();
-    return products;
+  async getAllProducts(page: number, limit: number) {
+    const skip = (page - 1) * limit;
+
+    const [products, total] = await Promise.all([
+      this.prisma.products.findMany({
+        skip,
+        take: limit,
+      }),
+
+      this.prisma.products.count(),
+    ]);
+
+    const totalPages = Math.ceil(total / limit);
+
+    return { products, meta: { page, limit, total, totalPages } };
   }
 
   async getProductById(id: string) {

@@ -7,14 +7,16 @@ import {
   ParseUUIDPipe,
   Patch,
   Post,
+  Query,
 } from '@nestjs/common';
 import { Public } from 'src/auth/decorators/public.decorator';
 import { Roles } from 'src/auth/decorators/roles.decorator';
 import { Role } from 'src/auth/types/authenticated-user.type';
+import { Message } from 'src/common/decorators/message.decorator';
+import { PaginationDto } from 'src/common/dto/pagination.dto';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { ProductsService } from './products.service';
-import { Message } from 'src/common/decorators/message.decorator';
 
 @Controller('products')
 export class ProductsController {
@@ -23,8 +25,8 @@ export class ProductsController {
   @Public()
   @Message('Products fetched successfully')
   @Get()
-  getAllProducts() {
-    return this.productsService.getAllProducts();
+  getAllProducts(@Query() query: PaginationDto) {
+    return this.productsService.getAllProducts(query.page, query.limit);
   }
 
   @Public()
