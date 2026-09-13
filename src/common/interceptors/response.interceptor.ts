@@ -10,24 +10,37 @@ import { map } from 'rxjs/operators';
 
 import { RESPONSE_MESSAGE_KEY } from '../decorators/message.decorator';
 
+interface PaginationMeta {
+  page: number;
+  limit: number;
+  total: number;
+  totalPages: number;
+}
+
+interface ServiceResponse {
+  meta?: PaginationMeta;
+  [key: string]: unknown;
+}
+
 export interface ApiResponse<T> {
   success: true;
   message: string;
   statusCode: number;
   data: T;
+  meta?: PaginationMeta;
 }
 
 @Injectable()
-export class ResponseInterceptor<T> implements NestInterceptor<
-  T,
-  ApiResponse<T>
+export class ResponseInterceptor implements NestInterceptor<
+  ServiceResponse,
+  ApiResponse<Record<string, unknown>>
 > {
   constructor(private readonly reflector: Reflector) {}
 
   intercept(
     context: ExecutionContext,
-    next: CallHandler<T>,
-  ): Observable<ApiResponse<T>> {
+    next: CallHandler<ServiceResponse>,
+  ): Observable<ApiResponse<Record<string, unknown>>> {
     const message =
       this.reflector.get<string>(RESPONSE_MESSAGE_KEY, context.getHandler()) ??
       'Request successful';
@@ -39,12 +52,17 @@ export class ResponseInterceptor<T> implements NestInterceptor<
     const statusCode = response.statusCode;
 
     return next.handle().pipe(
-      map((data) => ({
-        success: true,
-        message,
-        statusCode,
-        data,
-      })),
+      map((result) => {
+        const { meta, ...data } = result;
+
+        return {
+          success: true,
+          message,
+          statusCode,
+          data,
+          ...(meta && { meta }),
+        };
+      }),
     );
   }
 }
