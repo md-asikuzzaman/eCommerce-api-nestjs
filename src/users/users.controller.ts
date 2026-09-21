@@ -1,51 +1,58 @@
-import { Controller, Get, Patch } from '@nestjs/common';
-import { UsersService } from './users.service';
-import { Public } from 'src/auth/decorators/public.decorator';
+import { Body, Controller, Get, Param, Patch } from '@nestjs/common';
+import { Roles } from 'src/auth/decorators/roles.decorator';
+import { Role, type User } from 'src/auth/types/authenticated-user.type';
 import { CurrentUser } from 'src/common/decorators/current-user.decorator';
-import type { AuthenticatedUser } from 'src/auth/types/authenticated-user.type';
+import { Message } from 'src/common/decorators/message.decorator';
+import { UpdatePasswordDto } from './dto/update-password.dto';
+import { UpdateMeDto } from './dto/update-user.dto';
+import { UsersService } from './users.service';
 
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @Get('me')
-  getMe(@CurrentUser() user: AuthenticatedUser) {
+  @Message('Profile fetch successfully')
+  getMe(@CurrentUser() user: User) {
     return this.usersService.getMe(user.id);
   }
 
-  @Public()
   @Patch('me')
-  updateMe() {
-    return this.usersService.updateMe();
+  @Message('Profile updated successfully')
+  updateMe(@CurrentUser() user: User, @Body() dto: UpdateMeDto) {
+    return this.usersService.updateMe(user.id, dto);
   }
 
-  @Public()
+  @Message('Password update successfully')
   @Patch('me/password')
-  updatePassword() {
-    return this.usersService.updatePassword();
+  updatePassword(@CurrentUser() user: User, @Body() dto: UpdatePasswordDto) {
+    return this.usersService.updatePassword(user.id, dto);
   }
 
-  @Public()
   @Get()
+  @Roles(Role.ADMIN)
   getAllUsers() {
     return this.usersService.getAllUsers();
   }
 
-  @Public()
   @Get(':id')
-  getUserById() {
-    return this.usersService.getUserById();
+  @Roles(Role.ADMIN)
+  getUserById(@Param('id') id: string) {
+    return this.usersService.getUserById(id);
   }
 
-  @Public()
   @Patch(':id')
-  updateUserById() {
-    return this.usersService.updateUserById();
+  @Roles(Role.ADMIN)
+  updateUserById(@Param('id') id: string, @Body() dto: UpdateMeDto) {
+    return this.usersService.updateUserById(id, dto);
   }
 
-  @Public()
   @Patch(':id/status')
-  updateUserStatusById() {
-    return this.usersService.updateUserStatusById();
+  @Roles(Role.ADMIN)
+  updateUserStatusById(
+    @Param('id') id: string,
+    @Body() { status }: { status: boolean },
+  ) {
+    return this.usersService.updateUserStatusById(id, status);
   }
 }
