@@ -1,9 +1,12 @@
 import { Injectable } from '@nestjs/common';
+import { PrismaService } from 'src/prisma/prisma.service';
 
 @Injectable()
 export class UsersService {
-  getMe() {
-    return { msg: 'This action updates the current user password' };
+  constructor(private readonly prisma: PrismaService) {}
+
+  getMe(id: string) {
+    return { msg: id };
   }
 
   updateMe() {

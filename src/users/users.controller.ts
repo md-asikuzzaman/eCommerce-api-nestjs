@@ -1,15 +1,16 @@
 import { Controller, Get, Patch } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { Public } from 'src/auth/decorators/public.decorator';
+import { CurrentUser } from 'src/common/decorators/current-user.decorator';
+import type { AuthenticatedUser } from 'src/auth/types/authenticated-user.type';
 
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
-  @Public()
   @Get('me')
-  getMe() {
-    return this.usersService.getMe();
+  getMe(@CurrentUser() user: AuthenticatedUser) {
+    return this.usersService.getMe(user.id);
   }
 
   @Public()

@@ -14,7 +14,7 @@ export class CategoriesService {
 
   async getAllCategories() {
     const categories = await this.prisma.categories.findMany();
-    return categories;
+    return { categories };
   }
 
   async getCategoryById(id: string) {
