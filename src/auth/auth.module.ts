@@ -1,14 +1,12 @@
 import { Module } from '@nestjs/common';
-import { AuthService } from './auth.service';
-import { AuthController } from './auth.controller';
-import { PrismaModule } from 'src/prisma/prisma.module';
 import { JwtModule } from '@nestjs/jwt';
-import { LocalStrategy } from './strategies/local.strategy';
+import { AuthController } from './auth.controller';
+import { AuthService } from './auth.service';
 import { JwtStrategy } from './strategies/jwt.strategy';
+import { LocalStrategy } from './strategies/local.strategy';
 
 @Module({
   imports: [
-    PrismaModule,
     JwtModule.register({
       secret: '12121212',
       signOptions: {
