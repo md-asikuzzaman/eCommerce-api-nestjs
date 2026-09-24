@@ -71,15 +71,109 @@ export class CartService {
     };
   }
 
-  updateCartItem(id: string, dto: UpdateCartItemDto, productId: string) {
-    return { id, dto, productId };
+  async updateCartItem(
+    userId: string,
+    dto: UpdateCartItemDto,
+    productId: string,
+  ) {
+    const cart = await this.prisma.cart.findUnique({
+      where: {
+        userId,
+      },
+    });
+
+    if (!cart) {
+      throw new NotFoundException('Cart not found');
+    }
+
+    const cartItem = await this.prisma.cartItem.findUnique({
+      where: {
+        cartId_productId: {
+          cartId: cart.id,
+          productId,
+        },
+      },
+    });
+
+    if (!cartItem) {
+      throw new NotFoundException('Cart item not found');
+    }
+
+    if (dto.quantity <= 0) {
+      await this.prisma.cartItem.delete({
+        where: {
+          id: cartItem.id,
+        },
+      });
+
+      return {
+        message: 'Cart item remove successfully',
+      };
+    }
+
+    const updatedItem = await this.prisma.cartItem.update({
+      where: { id: cartItem.id },
+      data: {
+        quantity: dto.quantity,
+      },
+      include: {
+        product: true,
+      },
+    });
+
+    return updatedItem;
   }
 
-  deleteCartItem(id: string, productId: string) {
-    return { id, productId };
+  async deleteCartItem(userId: string, productId: string) {
+    const cart = await this.prisma.cart.findUnique({
+      where: { userId },
+    });
+
+    if (!cart) {
+      throw new NotFoundException('Cart not found');
+    }
+
+    const cartItem = await this.prisma.cartItem.findUnique({
+      where: {
+        cartId_productId: {
+          cartId: cart.id,
+          productId: productId,
+        },
+      },
+    });
+
+    if (!cartItem) {
+      throw new NotFoundException('Cart item not found');
+    }
+
+    await this.prisma.cartItem.delete({
+      where: {
+        id: cartItem.id,
+      },
+    });
+
+    return {
+      message: 'Cart item deleted successfully',
+    };
   }
 
-  clearCart(id: string) {
-    return { id };
+  async clearCart(userId: string) {
+    const cart = await this.prisma.cart.findUnique({
+      where: { userId },
+    });
+
+    if (!cart) {
+      throw new NotFoundException('Cart not found');
+    }
+
+    await this.prisma.cartItem.deleteMany({
+      where: {
+        cartId: cart.id,
+      },
+    });
+
+    return {
+      message: 'Cart delete successfully',
+    };
   }
 }

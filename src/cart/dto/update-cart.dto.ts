@@ -1,7 +1,7 @@
-import { IsInt, IsPositive } from 'class-validator';
+import { IsInt, Min } from 'class-validator';
 
 export class UpdateCartItemDto {
   @IsInt()
-  @IsPositive()
+  @Min(0, { message: 'quantity must be greater than or equal to 0' })
   quantity!: number;
 }
