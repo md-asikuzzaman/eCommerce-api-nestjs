@@ -40,8 +40,9 @@ model Products {
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
 
-  category  Categories @relation(fields: [categoryId], references: [id])
-  cartItems CartItem[]
+  category   Categories  @relation(fields: [categoryId], references: [id])
+  cartItems  CartItem[]
+  orderItems OrderItem[]
 
   @@index([categoryId])
   @@index([isActive])
@@ -59,6 +60,7 @@ model Users {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   cart      Cart?
+  orders    Order[]
 }
 
 enum UserRole {
@@ -88,5 +90,48 @@ model CartItem {
 
   @@unique([cartId, productId])
   @@index([cartId])
+  @@index([productId])
+}
+
+// Order Model
+enum OrderStatus {
+  PENDING
+  CONFIRMED
+  PROCESSING
+  SHIPPED
+  DELIVERED
+  CANCELLED
+}
+
+model Order {
+  id     String      @id @default(uuid())
+  userId String
+  status OrderStatus @default(PENDING)
+
+  totalAmount Decimal @db.Decimal(10, 2)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user  Users       @relation(fields: [userId], references: [id])
+  items OrderItem[]
+
+  @@index([userId])
+  @@index([status])
+  @@index([createdAt])
+}
+
+model OrderItem {
+  id        String @id @default(uuid())
+  orderId   String
+  productId String
+
+  quantity Int
+  price    Decimal @db.Decimal(10, 2)
+
+  order   Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  product Products @relation(fields: [productId], references: [id])
+
+  @@index([orderId])
   @@index([productId])
 }

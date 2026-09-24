@@ -1,12 +1,18 @@
 import { Injectable } from '@nestjs/common';
+import { PrismaService } from 'src/prisma/prisma.service';
 
 @Injectable()
 export class OrdersService {
-  getOrders() {
-    return {
-      msg: 'all orders',
-    };
+  constructor(private readonly prisma: PrismaService) {}
+
+  async getOrders(userId: string) {
+    const orders = await this.prisma.order.findMany({
+      where: { userId },
+    });
+
+    return { orders };
   }
+
   createOrder() {
     return {
       msg: 'create order',
