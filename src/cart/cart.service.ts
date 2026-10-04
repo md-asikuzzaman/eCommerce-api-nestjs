@@ -32,6 +32,12 @@ export class CartService {
       },
     });
 
+    if (!cartItems) {
+      return {
+        items: [],
+      };
+    }
+
     return cartItems;
   }
 
