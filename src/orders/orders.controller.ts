@@ -25,8 +25,8 @@ export class OrdersController {
   }
 
   @Post()
-  createOrder() {
-    return this.ordersService.createOrder();
+  createOrder(@CurrentUser() user: User) {
+    return this.ordersService.createOrder(user.id);
   }
 
   @Get(':orderId')

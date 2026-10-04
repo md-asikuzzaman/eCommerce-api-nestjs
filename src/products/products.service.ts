@@ -97,6 +97,17 @@ export class ProductsService {
       throw new ConflictException('Product already exists');
     }
 
+    // Check if the category exists
+    const category = await this.prisma.categories.findUnique({
+      where: {
+        id: dto.categoryId,
+      },
+    });
+
+    if (!category) {
+      throw new NotFoundException('Category not found');
+    }
+
     const product = await this.prisma.products.create({
       data: {
         ...dto,
