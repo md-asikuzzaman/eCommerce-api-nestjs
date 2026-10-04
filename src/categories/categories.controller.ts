@@ -15,7 +15,10 @@ import { UpdateCategoryDto } from './dto/update-category.dto';
 import { Roles } from 'src/auth/decorators/roles.decorator';
 import { Role } from 'src/auth/types/authenticated-user.type';
 
-@Controller('categories')
+@Controller({
+  path: 'categories',
+  version: '1',
+})
 export class CategoriesController {
   constructor(private readonly categoriesService: CategoriesService) {}
 
