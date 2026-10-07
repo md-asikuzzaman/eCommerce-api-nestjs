@@ -1,5 +1,13 @@
 import { applyDecorators } from '@nestjs/common';
-import { ApiBearerAuth, ApiOperation, ApiResponse } from '@nestjs/swagger';
+import {
+  ApiBadRequestResponse,
+  ApiBearerAuth,
+  ApiConflictResponse,
+  ApiCreatedResponse,
+  ApiOkResponse,
+  ApiOperation,
+  ApiUnauthorizedResponse,
+} from '@nestjs/swagger';
 
 export const RegisterDocs = () => {
   return applyDecorators(
@@ -8,18 +16,15 @@ export const RegisterDocs = () => {
       description: 'Creates a new user account.',
     }),
 
-    ApiResponse({
-      status: 201,
+    ApiCreatedResponse({
       description: 'User registered successfully.',
     }),
 
-    ApiResponse({
-      status: 400,
+    ApiBadRequestResponse({
       description: 'Invalid registration data.',
     }),
 
-    ApiResponse({
-      status: 409,
+    ApiConflictResponse({
       description: 'User with this email already exists.',
     }),
   );
@@ -32,13 +37,11 @@ export const LoginDocs = () => {
       description: 'Authenticates a user and returns an access token.',
     }),
 
-    ApiResponse({
-      status: 200,
+    ApiOkResponse({
       description: 'User logged in successfully.',
     }),
 
-    ApiResponse({
-      status: 401,
+    ApiUnauthorizedResponse({
       description: 'Invalid email or password.',
     }),
   );
@@ -63,4 +66,6 @@ export const RefreshTokenDocs = () => {
 };
 
 // Access token from swagger docs
-export const AuthDocs = () => applyDecorators(ApiBearerAuth('access-token'));
+export const AuthDocs = () => {
+  return applyDecorators(ApiBearerAuth('access-token'));
+};

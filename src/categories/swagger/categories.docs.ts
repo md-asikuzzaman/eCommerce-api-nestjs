@@ -1,5 +1,12 @@
 import { applyDecorators } from '@nestjs/common';
-import { ApiOperation, ApiResponse } from '@nestjs/swagger';
+import {
+  ApiBadRequestResponse,
+  ApiConflictResponse,
+  ApiCreatedResponse,
+  ApiNotFoundResponse,
+  ApiOkResponse,
+  ApiOperation,
+} from '@nestjs/swagger';
 
 export const GetAllCategoriesDocs = () => {
   return applyDecorators(
@@ -7,8 +14,7 @@ export const GetAllCategoriesDocs = () => {
       summary: 'Get all categories',
       description: 'Fetches a list of all categories.',
     }),
-    ApiResponse({
-      status: 200,
+    ApiOkResponse({
       description: 'Categories fetched successfully.',
     }),
   );
@@ -20,12 +26,10 @@ export const GetCategoryByIdDocs = () => {
       summary: 'Get category by ID',
       description: 'Fetches a single category using its unique ID.',
     }),
-    ApiResponse({
-      status: 200,
+    ApiOkResponse({
       description: 'Category fetched successfully.',
     }),
-    ApiResponse({
-      status: 404,
+    ApiNotFoundResponse({
       description: 'Category not found.',
     }),
   );
@@ -37,16 +41,13 @@ export const CreateCategoryDocs = () => {
       summary: 'Create category',
       description: 'Creates a new category.',
     }),
-    ApiResponse({
-      status: 201,
+    ApiCreatedResponse({
       description: 'Category created successfully.',
     }),
-    ApiResponse({
-      status: 400,
+    ApiBadRequestResponse({
       description: 'Invalid category data.',
     }),
-    ApiResponse({
-      status: 409,
+    ApiConflictResponse({
       description: 'A category with this name already exists.',
     }),
   );
@@ -58,20 +59,16 @@ export const UpdateCategoryDocs = () => {
       summary: 'Update category',
       description: 'Updates an existing category using its unique ID.',
     }),
-    ApiResponse({
-      status: 200,
+    ApiOkResponse({
       description: 'Category updated successfully.',
     }),
-    ApiResponse({
-      status: 400,
-      description: 'Invalid category data.',
-    }),
-    ApiResponse({
-      status: 404,
+    ApiNotFoundResponse({
       description: 'Category not found.',
     }),
-    ApiResponse({
-      status: 409,
+    ApiBadRequestResponse({
+      description: 'Invalid category data.',
+    }),
+    ApiConflictResponse({
       description: 'A category with this name already exists.',
     }),
   );
@@ -83,12 +80,10 @@ export const DeleteCategoryDocs = () => {
       summary: 'Delete category',
       description: 'Deletes an existing category using its unique ID.',
     }),
-    ApiResponse({
-      status: 200,
+    ApiOkResponse({
       description: 'Category deleted successfully.',
     }),
-    ApiResponse({
-      status: 404,
+    ApiNotFoundResponse({
       description: 'Category not found.',
     }),
   );

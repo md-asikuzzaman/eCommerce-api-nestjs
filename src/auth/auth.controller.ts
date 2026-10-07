@@ -10,7 +10,7 @@ import {
   LogoutDocs,
   RefreshTokenDocs,
   RegisterDocs,
-} from './swagger/user.doc';
+} from './swagger/auth.doc';
 
 @Controller('auth')
 export class AuthController {

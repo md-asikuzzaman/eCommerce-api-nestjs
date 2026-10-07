@@ -20,12 +20,14 @@ import {
   GetAllCategoriesDocs,
   GetCategoryByIdDocs,
   UpdateCategoryDocs,
-} from './swagger/user.docs';
+} from './swagger/categories.docs';
+import { AuthDocs } from 'src/auth/swagger/auth.doc';
 
 @Controller({
   path: 'categories',
   version: '1',
 })
+@AuthDocs()
 export class CategoriesController {
   constructor(private readonly categoriesService: CategoriesService) {}
 

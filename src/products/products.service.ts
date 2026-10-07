@@ -8,21 +8,24 @@ import { UpdateProductDto } from './dto/update-product.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { generateSlug } from 'src/common/utils/slug.util';
 import { Prisma } from '@prisma/client';
+import { GetProductsDto } from 'src/common/dto/get-products.dto';
 
 @Injectable()
 export class ProductsService {
   constructor(private readonly prisma: PrismaService) {}
 
-  async getAllProducts(
-    page: number,
-    limit: number,
-    categoryId?: string,
-    search?: string,
-    minPrice?: number,
-    maxPrice?: number,
-    sortBy?: 'price' | 'createdAt' | 'name',
-    order?: 'asc' | 'desc',
-  ) {
+  async getAllProducts(query: GetProductsDto) {
+    const {
+      categoryId,
+      search,
+      minPrice,
+      maxPrice,
+      sortBy,
+      order,
+      page = 1,
+      limit = 10,
+    } = query;
+
     const skip = (page - 1) * limit;
 
     const where: Prisma.ProductsWhereInput = {
