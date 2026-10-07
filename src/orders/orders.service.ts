@@ -3,6 +3,7 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
+import { OrderStatus } from '@prisma/client';
 import { formatMoney } from 'src/common/utils/format-money';
 import { PrismaService } from 'src/prisma/prisma.service';
 
@@ -245,9 +246,22 @@ export class OrdersService {
     return order;
   }
 
-  updateOrderStatusForAdmin(orderId: string) {
+  async updateOrderStatusForAdmin(orderId: string, status: OrderStatus) {
+    const order = await this.prisma.order.findUnique({
+      where: { id: orderId },
+    });
+
+    if (!order) {
+      throw new NotFoundException('Order not found');
+    }
+
+    const updatedOrder = await this.prisma.order.update({
+      where: { id: orderId },
+      data: { status },
+    });
+
     return {
-      msg: 'update order status by ID' + orderId,
+      order: updatedOrder,
     };
   }
 }
