@@ -1,27 +1,11 @@
-import {
-  Body,
-  Controller,
-  Delete,
-  Get,
-  Param,
-  ParseUUIDPipe,
-  Patch,
-  Post,
-} from '@nestjs/common';
+import { Controller, Get, Param, ParseUUIDPipe } from '@nestjs/common';
 import { Public } from 'src/auth/decorators/public.decorator';
+import { AuthDocs } from 'src/auth/swagger/auth.doc';
 import { CategoriesService } from './categories.service';
-import { CreateCategoryDto } from './dto/create-category.dto';
-import { UpdateCategoryDto } from './dto/update-category.dto';
-import { Roles } from 'src/auth/decorators/roles.decorator';
-import { Role } from 'src/auth/types/authenticated-user.type';
 import {
-  CreateCategoryDocs,
-  DeleteCategoryDocs,
   GetAllCategoriesDocs,
   GetCategoryByIdDocs,
-  UpdateCategoryDocs,
 } from './swagger/categories.docs';
-import { AuthDocs } from 'src/auth/swagger/auth.doc';
 
 @Controller({
   path: 'categories',
@@ -43,29 +27,5 @@ export class CategoriesController {
   @GetCategoryByIdDocs()
   getCategoryById(@Param('id', ParseUUIDPipe) id: string) {
     return this.categoriesService.getCategoryById(id);
-  }
-
-  @Roles(Role.ADMIN)
-  @Post()
-  @CreateCategoryDocs()
-  createCategory(@Body() dto: CreateCategoryDto) {
-    return this.categoriesService.createCategory(dto);
-  }
-
-  @Roles(Role.ADMIN)
-  @Patch(':id')
-  @UpdateCategoryDocs()
-  updateCategory(
-    @Param('id', ParseUUIDPipe) id: string,
-    @Body() dto: UpdateCategoryDto,
-  ) {
-    return this.categoriesService.updateCategory(id, dto);
-  }
-
-  @Roles(Role.ADMIN)
-  @Delete(':id')
-  @DeleteCategoryDocs()
-  deleteCategory(@Param('id', ParseUUIDPipe) id: string) {
-    return this.categoriesService.deleteCategory(id);
   }
 }
