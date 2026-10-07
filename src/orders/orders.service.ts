@@ -1,4 +1,8 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { formatMoney } from 'src/common/utils/format-money';
 import { PrismaService } from 'src/prisma/prisma.service';
 
@@ -145,31 +149,103 @@ export class OrdersService {
     });
 
     if (!order) {
-      throw new BadRequestException('Order not found');
+      throw new NotFoundException('Order not found');
     }
 
     return order;
   }
 
-  cancelOrderById(orderId: string) {
+  async cancelOrderById(orderId: string) {
+    const order = await this.prisma.order.findUnique({
+      where: { id: orderId },
+      include: {
+        items: {
+          include: {
+            product: true,
+          },
+        },
+      },
+    });
+
+    if (!order) {
+      throw new BadRequestException('Order not found');
+    }
+
+    if (order.status !== 'PENDING') {
+      throw new BadRequestException('Only pending orders can be canceled');
+    }
+
+    await this.prisma.$transaction(async (tx) => {
+      // Update order status to canceled
+      await tx.order.update({
+        where: { id: orderId },
+        data: { status: 'CANCELLED' },
+      });
+
+      // Restore product stock
+      for (const item of order.items) {
+        await tx.products.update({
+          where: { id: item.productId },
+          data: {
+            quantity: {
+              increment: item.quantity,
+            },
+          },
+        });
+      }
+    });
+
     return {
-      msg: 'cancel order by ID' + orderId,
+      msg: 'Order canceled successfully',
     };
   }
 
-  getOrdersForAdmin() {
+  /**
+   * ============ ADMIN ROUTES ============
+   */
+
+  async getOrdersForAdmin() {
+    const orders = await this.prisma.order.findMany({
+      include: {
+        items: {
+          include: {
+            product: true,
+          },
+        },
+      },
+
+      orderBy: {
+        createdAt: 'desc',
+      },
+    });
+
     return {
-      msg: 'get orders by admin',
+      orders,
     };
   }
 
-  getOrderByIdForAdmin(orderId: string) {
-    return {
-      msg: 'get order by ID for admin' + orderId,
-    };
+  async getOrderByIdForAdmin(orderId: string) {
+    const order = await this.prisma.order.findUnique({
+      where: {
+        id: orderId,
+      },
+      include: {
+        items: {
+          include: {
+            product: true,
+          },
+        },
+      },
+    });
+
+    if (!order) {
+      throw new NotFoundException('Order not found');
+    }
+
+    return order;
   }
 
-  updateOrderStatus(orderId: string) {
+  updateOrderStatusForAdmin(orderId: string) {
     return {
       msg: 'update order status by ID' + orderId,
     };

@@ -25,16 +25,19 @@ export class OrdersController {
   }
 
   @Post()
+  @Message('Order created successfully')
   createOrder(@CurrentUser() user: User) {
     return this.ordersService.createOrder(user.id);
   }
 
   @Get(':orderId')
+  @Message('Order fetched successfully')
   getOrderById(@Param('orderId', ParseUUIDPipe) orderId: string) {
     return this.ordersService.getOrderById(orderId);
   }
 
   @Patch(':orderId/cancel')
+  @Message('Order cancelled successfully')
   cancelOrderById(@Param('orderId', ParseUUIDPipe) orderId: string) {
     return this.ordersService.cancelOrderById(orderId);
   }
