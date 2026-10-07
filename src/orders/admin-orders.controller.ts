@@ -10,8 +10,10 @@ import { OrdersService } from './orders.service';
 import { Roles } from 'src/auth/decorators/roles.decorator';
 import { Role } from 'src/auth/types/authenticated-user.type';
 import { UpdateOrderStatusDto } from './dto/update-order-status.dto';
+import { AuthDocs } from 'src/auth/swagger/user.doc';
 
 @Controller('admin/orders')
+@AuthDocs()
 export class AdminOrdersController {
   constructor(private readonly ordersService: OrdersService) {}
 

@@ -1,10 +1,16 @@
 import { Body, Controller, Post, Request, UseGuards } from '@nestjs/common';
-import { AuthService } from './auth.service';
-import { RegisterDto } from './dto/register.dto';
-import { LoginDto } from './dto/login.dto';
-import { LocalAuthGuard } from './guards/local-auth.guard';
 import { UserRole } from '@prisma/client';
+import { AuthService } from './auth.service';
 import { Public } from './decorators/public.decorator';
+import { LoginDto } from './dto/login.dto';
+import { RegisterDto } from './dto/register.dto';
+import { LocalAuthGuard } from './guards/local-auth.guard';
+import {
+  LoginDocs,
+  LogoutDocs,
+  RefreshTokenDocs,
+  RegisterDocs,
+} from './swagger/user.doc';
 
 @Controller('auth')
 export class AuthController {
@@ -12,6 +18,7 @@ export class AuthController {
 
   @Public()
   @Post('register')
+  @RegisterDocs()
   register(@Body() dto: RegisterDto) {
     return this.authService.register(dto);
   }
@@ -19,6 +26,7 @@ export class AuthController {
   @Public()
   @Post('login')
   @UseGuards(LocalAuthGuard)
+  @LoginDocs()
   login(
     @Body() dto: LoginDto,
     @Request()
@@ -35,12 +43,14 @@ export class AuthController {
   }
 
   @Post('logout')
+  @LogoutDocs()
   logout() {
     // Implement your logout logic here
     return { message: 'Logout successful' };
   }
 
   @Post('refresh')
+  @RefreshTokenDocs()
   refreshToken() {
     // Implement your refresh token logic here
     return { message: 'Token refreshed successfully' };
