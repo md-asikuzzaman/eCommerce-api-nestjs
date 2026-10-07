@@ -132,10 +132,23 @@ export class OrdersService {
     return order;
   }
 
-  getOrderById(orderId: string) {
-    return {
-      msg: 'get order by ID' + orderId,
-    };
+  async getOrderById(orderId: string) {
+    const order = await this.prisma.order.findUnique({
+      where: { id: orderId },
+      include: {
+        items: {
+          include: {
+            product: true,
+          },
+        },
+      },
+    });
+
+    if (!order) {
+      throw new BadRequestException('Order not found');
+    }
+
+    return order;
   }
 
   cancelOrderById(orderId: string) {
