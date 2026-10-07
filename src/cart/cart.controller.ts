@@ -21,7 +21,6 @@ export class CartController {
   @Get()
   @Message('Cart items fetched successfully')
   getCart(@CurrentUser() user: User) {
-    // console.log(user);
     return this.cartService.getCart(user.id);
   }
 

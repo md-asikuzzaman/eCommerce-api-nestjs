@@ -11,7 +11,9 @@ import { Roles } from 'src/auth/decorators/roles.decorator';
 import { Role } from 'src/auth/types/authenticated-user.type';
 import { UpdateOrderStatusDto } from './dto/update-order-status.dto';
 import { AuthDocs } from 'src/auth/swagger/auth.doc';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('Orders - Admin')
 @Controller('admin/orders')
 @AuthDocs()
 export class AdminOrdersController {
