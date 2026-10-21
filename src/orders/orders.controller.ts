@@ -13,6 +13,12 @@ import { CurrentUser } from 'src/common/decorators/current-user.decorator';
 import type { User } from 'src/auth/types/authenticated-user.type';
 import { Message } from 'src/common/decorators/message.decorator';
 import { ApiBearerAuthDocs } from 'src/auth/swagger/auth.doc';
+import {
+  CancelOrderByIdDocs,
+  CreateOrderDocs,
+  GetOrderByIdDocs,
+  GetOrdersDocs,
+} from './swagger/orders.docs';
 
 @Controller('orders')
 @ApiBearerAuthDocs()
@@ -22,24 +28,28 @@ export class OrdersController {
   @Get()
   @Message('Orders fetched successfully')
   @HttpCode(HttpStatus.OK)
+  @GetOrdersDocs()
   getOrders(@CurrentUser() user: User) {
     return this.ordersService.getOrders(user.id);
   }
 
   @Post()
   @Message('Order created successfully')
+  @CreateOrderDocs()
   createOrder(@CurrentUser() user: User) {
     return this.ordersService.createOrder(user.id);
   }
 
   @Get(':orderId')
   @Message('Order fetched successfully')
+  @GetOrderByIdDocs()
   getOrderById(@Param('orderId', ParseUUIDPipe) orderId: string) {
     return this.ordersService.getOrderById(orderId);
   }
 
   @Patch(':orderId/cancel')
   @Message('Order cancelled successfully')
+  @CancelOrderByIdDocs()
   cancelOrderById(@Param('orderId', ParseUUIDPipe) orderId: string) {
     return this.ordersService.cancelOrderById(orderId);
   }
