@@ -1,4 +1,12 @@
-import { Body, Controller, Post, Request, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  HttpCode,
+  HttpStatus,
+  Post,
+  Request,
+  UseGuards,
+} from '@nestjs/common';
 import { UserRole } from '@prisma/client';
 import { AuthService } from './auth.service';
 import { Public } from './decorators/public.decorator';
@@ -25,6 +33,7 @@ export class AuthController {
 
   @Public()
   @Post('login')
+  @HttpCode(HttpStatus.OK)
   @UseGuards(LocalAuthGuard)
   @LoginDocs()
   login(

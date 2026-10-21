@@ -6,6 +6,11 @@ import { UpdatePasswordDto } from './dto/update-password.dto';
 import { UpdateMeDto } from './dto/update-user.dto';
 import { UsersService } from './users.service';
 import { AuthDocs } from 'src/auth/swagger/auth.doc';
+import {
+  GetMeDocs,
+  UpdateMeDocs,
+  UpdatePasswordDocs,
+} from './swagger/users.docs';
 
 @AuthDocs()
 @Controller('users')
@@ -14,18 +19,21 @@ export class UsersController {
 
   @Get('me')
   @Message('Profile fetch successfully')
+  @GetMeDocs()
   getMe(@CurrentUser() user: User) {
     return this.usersService.getMe(user.id);
   }
 
   @Patch('me')
   @Message('Profile updated successfully')
+  @UpdateMeDocs()
   updateMe(@CurrentUser() user: User, @Body() dto: UpdateMeDto) {
     return this.usersService.updateMe(user.id, dto);
   }
 
-  @Message('Password update successfully')
   @Patch('me/password')
+  @Message('Password update successfully')
+  @UpdatePasswordDocs()
   updatePassword(@CurrentUser() user: User, @Body() dto: UpdatePasswordDto) {
     return this.usersService.updatePassword(user.id, dto);
   }
