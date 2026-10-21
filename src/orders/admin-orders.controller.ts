@@ -10,12 +10,12 @@ import { OrdersService } from './orders.service';
 import { Roles } from 'src/auth/decorators/roles.decorator';
 import { Role } from 'src/auth/types/authenticated-user.type';
 import { UpdateOrderStatusDto } from './dto/update-order-status.dto';
-import { AuthDocs } from 'src/auth/swagger/auth.doc';
+import { ApiBearerAuthDocs } from 'src/auth/swagger/auth.doc';
 import { ApiTags } from '@nestjs/swagger';
 
 @ApiTags('Orders - Admin')
 @Controller('admin/orders')
-@AuthDocs()
+@ApiBearerAuthDocs()
 export class AdminOrdersController {
   constructor(private readonly ordersService: OrdersService) {}
 

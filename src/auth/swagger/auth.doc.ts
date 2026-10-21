@@ -66,6 +66,6 @@ export const RefreshTokenDocs = () => {
 };
 
 // Access token from swagger docs
-export const AuthDocs = () => {
+export const ApiBearerAuthDocs = () => {
   return applyDecorators(ApiBearerAuth('access-token'));
 };

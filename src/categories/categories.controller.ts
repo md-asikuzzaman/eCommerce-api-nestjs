@@ -1,6 +1,6 @@
 import { Controller, Get, Param, ParseUUIDPipe } from '@nestjs/common';
 import { Public } from 'src/auth/decorators/public.decorator';
-import { AuthDocs } from 'src/auth/swagger/auth.doc';
+import { ApiBearerAuthDocs } from 'src/auth/swagger/auth.doc';
 import { CategoriesService } from './categories.service';
 import {
   GetAllCategoriesDocs,
@@ -11,7 +11,7 @@ import {
   path: 'categories',
   version: '1',
 })
-@AuthDocs()
+@ApiBearerAuthDocs()
 export class CategoriesController {
   constructor(private readonly categoriesService: CategoriesService) {}
 

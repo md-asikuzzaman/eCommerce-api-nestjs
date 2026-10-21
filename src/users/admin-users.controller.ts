@@ -3,7 +3,7 @@ import { Roles } from 'src/auth/decorators/roles.decorator';
 import { Role } from 'src/auth/types/authenticated-user.type';
 import { UpdateMeDto } from './dto/update-user.dto';
 import { UsersService } from './users.service';
-import { AuthDocs } from 'src/auth/swagger/auth.doc';
+import { ApiBearerAuthDocs } from 'src/auth/swagger/auth.doc';
 import { ApiTags } from '@nestjs/swagger';
 import {
   GetAllUsersDocs,
@@ -13,7 +13,7 @@ import {
 } from './swagger/users.docs';
 
 @ApiTags('Users - Admin')
-@AuthDocs()
+@ApiBearerAuthDocs()
 @Controller('admin/users')
 export class AdminUsersController {
   constructor(private readonly usersService: UsersService) {}

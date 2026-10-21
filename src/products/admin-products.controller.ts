@@ -19,10 +19,10 @@ import {
   UpdateProductDocs,
 } from './swagger/products.docs';
 import { ApiTags } from '@nestjs/swagger';
-import { AuthDocs } from 'src/auth/swagger/auth.doc';
+import { ApiBearerAuthDocs } from 'src/auth/swagger/auth.doc';
 
 @ApiTags('Products - Admin')
-@AuthDocs()
+@ApiBearerAuthDocs()
 @Controller('admin/products')
 export class AdminProductsController {
   constructor(private readonly productsService: ProductsService) {}

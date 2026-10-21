@@ -8,7 +8,7 @@ import {
   Post,
 } from '@nestjs/common';
 import { Roles } from 'src/auth/decorators/roles.decorator';
-import { AuthDocs } from 'src/auth/swagger/auth.doc';
+import { ApiBearerAuthDocs } from 'src/auth/swagger/auth.doc';
 import { Role } from 'src/auth/types/authenticated-user.type';
 import { CategoriesService } from './categories.service';
 import { CreateCategoryDto } from './dto/create-category.dto';
@@ -21,7 +21,7 @@ import {
 import { ApiTags } from '@nestjs/swagger';
 
 @ApiTags('Categories - Admin')
-@AuthDocs()
+@ApiBearerAuthDocs()
 @Controller({
   path: 'admin/categories',
   version: '1',

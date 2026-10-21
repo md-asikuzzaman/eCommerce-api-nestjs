@@ -5,14 +5,14 @@ import { Message } from 'src/common/decorators/message.decorator';
 import { UpdatePasswordDto } from './dto/update-password.dto';
 import { UpdateMeDto } from './dto/update-user.dto';
 import { UsersService } from './users.service';
-import { AuthDocs } from 'src/auth/swagger/auth.doc';
+import { ApiBearerAuthDocs } from 'src/auth/swagger/auth.doc';
 import {
   GetMeDocs,
   UpdateMeDocs,
   UpdatePasswordDocs,
 } from './swagger/users.docs';
 
-@AuthDocs()
+@ApiBearerAuthDocs()
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
